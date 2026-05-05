@@ -1,0 +1,283 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, #7c3aed55, transparent 35%),
+    radial-gradient(circle at top right, #06b6d455, transparent 30%),
+    #0f172a;
+  color: white;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 45px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.logo {
+  width: 120px;
+  transform: scale(3);
+  margin-bottom: 25px;
+}
+
+.hero h1 {
+  font-size: 52px;
+  margin: 20px 0 5px;
+}
+
+.hero p {
+  color: #cbd5e1;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 470px 1fr;
+  gap: 25px;
+  max-width: 1300px;
+  margin: auto;
+}
+
+.panel {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 28px;
+  padding: 28px;
+}
+
+.panel h2 {
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 7px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #020617;
+  color: white;
+  font-size: 15px;
+}
+
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 15px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.secondary {
+  background: rgba(255,255,255,0.14);
+}
+
+.mini,
+.item,
+.saved-item {
+  background: rgba(2, 6, 23, 0.55);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 15px;
+  margin-top: 14px;
+}
+
+.mini {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #cbd5e1;
+}
+
+.items-title,
+.item-top,
+.saved-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.small,
+.danger,
+.saved-item button {
+  width: auto;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 11px;
+  font-size: 13px;
+}
+
+.danger,
+.saved-item button {
+  background: #ef4444;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.saved {
+  margin-top: 25px;
+}
+
+.saved-item div {
+  cursor: pointer;
+}
+
+.saved-item span {
+  display: block;
+  color: #94a3b8;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.invoice {
+  background: white;
+  color: #0f172a;
+  border-radius: 28px;
+  padding: 45px;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 25px;
+}
+
+.invoice-header h2 {
+  margin: 0;
+  font-size: 36px;
+}
+
+.invoice-header p {
+  margin: 6px 0;
+  color: #475569;
+}
+
+.right {
+  text-align: right;
+}
+
+.bill-box {
+  margin: 35px 0;
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 25px;
+}
+
+.bill-box span {
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.bill-box h3 {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #0f172a;
+  color: white;
+  padding: 16px;
+  text-align: left;
+}
+
+td {
+  padding: 17px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th:nth-child(n+2),
+td:nth-child(n+2) {
+  text-align: right;
+}
+
+.totals {
+  margin-left: auto;
+  margin-top: 35px;
+  max-width: 360px;
+}
+
+.totals p,
+.totals h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.totals h3 {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 15px;
+  font-size: 24px;
+}
+
+.payment {
+  margin-top: 45px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.payment h3 {
+  color: #0f172a;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .page {
+    padding: 0 !important;
+  }
+
+  .app {
+    display: block !important;
+    max-width: none !important;
+  }
+
+  .invoice {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    border-radius: 0 !important;
+    padding: 22mm !important;
+  }
+}
