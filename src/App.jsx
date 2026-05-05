@@ -63,11 +63,16 @@ export default function App() {
   }
 
   function addItem() {
-    setItems([...items, { id: Date.now(), description: "", quantity: "", price: "" }]);
+    setItems([
+      ...items,
+      { id: Date.now(), description: "", quantity: "", price: "" },
+    ]);
   }
 
   function updateItem(id, field, value) {
-    setItems(items.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
+    setItems(
+      items.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
   }
 
   function removeItem(id) {
@@ -132,18 +137,44 @@ export default function App() {
 
   return (
     <div className="page">
-      <div className="hero no-print">
-        <div className="brand-logo">◆ Invora</div>
-        <h1>Invoices done right</h1>
-        <p>Professional invoice generator for small businesses.</p>
+      <div className="topbar no-print">
+        <div className="brand">
+          <div className="brand-mark">◆</div>
+          <span>Invora</span>
+        </div>
+        <div className="top-actions">
+          <button className="ghost-btn" onClick={newInvoice}>
+            New invoice
+          </button>
+          <button className="primary-btn" onClick={downloadPDF}>
+            Download PDF
+          </button>
+        </div>
       </div>
+
+      <section className="hero no-print">
+        <div className="pill">Professional invoicing made simple</div>
+        <h1>
+          Create polished invoices
+          <span> in seconds.</span>
+        </h1>
+        <p>
+          Build clean invoices, calculate VAT, add payment details, and export a
+          branded PDF instantly.
+        </p>
+      </section>
 
       <div className="app">
         <div className="panel no-print">
-          <h2>Invoice</h2>
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">Editor</p>
+              <h2>Invoice details</h2>
+            </div>
+            <div className="invoice-badge">{invoiceCode}</div>
+          </div>
 
           <div className="mini">
-            <b>{invoiceCode}</b>
             <span>Issue: {issueDate.toLocaleDateString("nb-NO")}</span>
             <span>Due: {dueDate.toLocaleDateString("nb-NO")}</span>
           </div>
@@ -157,66 +188,110 @@ export default function App() {
           <label>Payment terms</label>
           <input value={terms} onChange={(e) => setTerms(e.target.value)} />
 
-          <h3>Company settings</h3>
+          <div className="section-title">Company settings</div>
 
           <label>Company name</label>
-          <input value={company.name} onChange={(e) => updateCompany("name", e.target.value)} />
+          <input
+            value={company.name}
+            onChange={(e) => updateCompany("name", e.target.value)}
+          />
 
           <label>Org number</label>
-          <input value={company.org} onChange={(e) => updateCompany("org", e.target.value)} />
+          <input
+            value={company.org}
+            onChange={(e) => updateCompany("org", e.target.value)}
+          />
 
           <label>Address</label>
-          <input value={company.address} onChange={(e) => updateCompany("address", e.target.value)} />
+          <input
+            value={company.address}
+            onChange={(e) => updateCompany("address", e.target.value)}
+          />
 
           <label>Email</label>
-          <input value={company.email} onChange={(e) => updateCompany("email", e.target.value)} />
+          <input
+            value={company.email}
+            onChange={(e) => updateCompany("email", e.target.value)}
+          />
 
           <label>Account number</label>
-          <input value={company.account} onChange={(e) => updateCompany("account", e.target.value)} />
+          <input
+            value={company.account}
+            onChange={(e) => updateCompany("account", e.target.value)}
+          />
 
           <label>IBAN</label>
-          <input value={company.iban} onChange={(e) => updateCompany("iban", e.target.value)} />
+          <input
+            value={company.iban}
+            onChange={(e) => updateCompany("iban", e.target.value)}
+          />
 
           <div className="items-title">
-            <h3>Items</h3>
-            <button className="small" onClick={addItem}>+ Add</button>
+            <div className="section-title">Items</div>
+            <button className="small" onClick={addItem}>
+              + Add
+            </button>
           </div>
 
           {items.map((item, index) => (
             <div className="item" key={item.id}>
               <div className="item-top">
                 <b>Item {index + 1}</b>
-                <button className="danger" onClick={() => removeItem(item.id)}>Remove</button>
+                <button className="danger" onClick={() => removeItem(item.id)}>
+                  Remove
+                </button>
               </div>
 
               <label>Description</label>
-              <input value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} />
+              <input
+                value={item.description}
+                onChange={(e) =>
+                  updateItem(item.id, "description", e.target.value)
+                }
+              />
 
               <div className="grid">
                 <div>
                   <label>Qty</label>
-                  <input type="number" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value)} />
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateItem(item.id, "quantity", e.target.value)
+                    }
+                  />
                 </div>
                 <div>
                   <label>Price</label>
-                  <input type="number" value={item.price} onChange={(e) => updateItem(item.id, "price", e.target.value)} />
+                  <input
+                    type="number"
+                    value={item.price}
+                    onChange={(e) =>
+                      updateItem(item.id, "price", e.target.value)
+                    }
+                  />
                 </div>
               </div>
             </div>
           ))}
 
-          <button onClick={downloadPDF}>Download PDF</button>
-          <button className="secondary" onClick={saveInvoice}>Save invoice</button>
-          <button className="secondary" onClick={newInvoice}>New invoice / next number</button>
+          <button className="primary-btn wide" onClick={downloadPDF}>
+            Download PDF
+          </button>
+          <button className="secondary wide" onClick={saveInvoice}>
+            Save invoice
+          </button>
 
           <div className="saved">
-            <h3>Saved invoices</h3>
+            <div className="section-title">Saved invoices</div>
             {savedInvoices.length === 0 && <p>No saved invoices.</p>}
             {savedInvoices.map((invoice) => (
               <div className="saved-item" key={invoice.id}>
                 <div onClick={() => loadInvoice(invoice)}>
                   <b>{invoice.invoiceCode}</b>
-                  <span>{invoice.client} • {money(invoice.total)}</span>
+                  <span>
+                    {invoice.client || "No client"} • {money(invoice.total)}
+                  </span>
                 </div>
                 <button onClick={() => deleteInvoice(invoice.id)}>X</button>
               </div>
@@ -224,65 +299,103 @@ export default function App() {
           </div>
         </div>
 
-        <div className="invoice" ref={invoiceRef}>
-          <div className="invoice-header">
-            <div>
-              <h2>{company.name}</h2>
-              <p>{company.org}</p>
-              <p>{company.address}</p>
-              <p>{company.email}</p>
+        <div className="preview-wrap">
+          <div className="preview-label no-print">Live PDF preview</div>
+
+          <div className="invoice" ref={invoiceRef}>
+            <div className="invoice-accent"></div>
+
+            <div className="invoice-header">
+              <div>
+                <div className="invoice-brand">
+                  <span>◆</span>
+                  <strong>{company.name}</strong>
+                </div>
+                <p>{company.org}</p>
+                <p>{company.address}</p>
+                <p>{company.email}</p>
+              </div>
+
+              <div className="right">
+                <h3>Invoice</h3>
+                <p className="big-code">{invoiceCode}</p>
+                <p>Issue date: {issueDate.toLocaleDateString("nb-NO")}</p>
+                <p>Due date: {dueDate.toLocaleDateString("nb-NO")}</p>
+              </div>
             </div>
 
-            <div className="right">
-              <h3>Invoice #{invoiceCode}</h3>
-              <p>Issue date: {issueDate.toLocaleDateString("nb-NO")}</p>
-              <p>Due date: {dueDate.toLocaleDateString("nb-NO")}</p>
+            <div className="bill-row">
+              <div className="bill-box">
+                <span>Bill to</span>
+                <h3>{client}</h3>
+              </div>
+
+              <div className="amount-card">
+                <span>Total due</span>
+                <strong>{total > 0 ? money(total) : ""}</strong>
+              </div>
             </div>
-          </div>
 
-          <div className="bill-box">
-            <span>Bill to</span>
-            <h3>{client}</h3>
-          </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Total</th>
-              </tr>
-            </thead>
+              <tbody>
+                {items.map((item) => {
+                  const lineTotal =
+                    Number(item.quantity || 0) * Number(item.price || 0);
 
-            <tbody>
-              {items.map((item) => {
-                const lineTotal = Number(item.quantity || 0) * Number(item.price || 0);
+                  return (
+                    <tr key={item.id}>
+                      <td>{item.description}</td>
+                      <td>{item.quantity}</td>
+                      <td>{item.price ? money(Number(item.price)) : ""}</td>
+                      <td>{lineTotal > 0 ? money(lineTotal) : ""}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
 
-                return (
-                  <tr key={item.id}>
-                    <td>{item.description}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price ? money(Number(item.price)) : ""}</td>
-                    <td>{lineTotal > 0 ? money(lineTotal) : ""}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+            <div className="totals">
+              <p>
+                <span>Subtotal</span>
+                <b>{subtotal > 0 ? money(subtotal) : ""}</b>
+              </p>
+              <p>
+                <span>VAT 25%</span>
+                <b>{vat > 0 ? money(vat) : ""}</b>
+              </p>
+              <h3>
+                <span>Total</span>
+                <b>{total > 0 ? money(total) : ""}</b>
+              </h3>
+            </div>
 
-          <div className="totals">
-            <p><span>Subtotal</span><b>{subtotal > 0 ? money(subtotal) : ""}</b></p>
-            <p><span>VAT 25%</span><b>{vat > 0 ? money(vat) : ""}</b></p>
-            <h3><span>Total</span><b>{total > 0 ? money(total) : ""}</b></h3>
-          </div>
-
-          <div className="payment">
-            <h3>Payment information</h3>
-            <p><b>KID:</b> {kid}</p>
-            <p><b>Account:</b> {company.account}</p>
-            <p><b>IBAN:</b> {company.iban}</p>
-            <p>{terms}</p>
+            <div className="payment">
+              <h3>Payment information</h3>
+              <div className="payment-grid">
+                <p>
+                  <b>KID</b>
+                  <span>{kid}</span>
+                </p>
+                <p>
+                  <b>Account</b>
+                  <span>{company.account}</span>
+                </p>
+                <p>
+                  <b>IBAN</b>
+                  <span>{company.iban}</span>
+                </p>
+              </div>
+              <p className="terms">{terms}</p>
+            </div>
           </div>
         </div>
       </div>
