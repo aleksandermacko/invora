@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
-import logo from "./assets/logo.png";
 import "./App.css";
 
 export default function App() {
   const invoiceRef = useRef(null);
 
   const [company, setCompany] = useState({
-    name: "Invoxa",
+    name: "Invora",
     org: "Org.nr 000 000 000 MVA",
     address: "Street 1, 4000 Stavanger",
-    email: "contact@invoxa.app",
+    email: "contact@invora.app",
     account: "",
     iban: "",
   });
@@ -26,13 +25,17 @@ export default function App() {
   ]);
 
   useEffect(() => {
-    setCompany(JSON.parse(localStorage.getItem("company")) || company);
-    setInvoiceNumber(Number(localStorage.getItem("invoiceNumber")) || 1);
-    setSavedInvoices(JSON.parse(localStorage.getItem("savedInvoices")) || []);
+    const savedCompany = localStorage.getItem("invora-company");
+    const savedNumber = localStorage.getItem("invora-invoice-number");
+    const saved = localStorage.getItem("invora-saved-invoices");
+
+    if (savedCompany) setCompany(JSON.parse(savedCompany));
+    if (savedNumber) setInvoiceNumber(Number(savedNumber));
+    if (saved) setSavedInvoices(JSON.parse(saved));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("company", JSON.stringify(company));
+    localStorage.setItem("invora-company", JSON.stringify(company));
   }, [company]);
 
   const subtotal = items.reduce(
@@ -87,7 +90,7 @@ export default function App() {
 
     const updated = [invoice, ...savedInvoices];
     setSavedInvoices(updated);
-    localStorage.setItem("savedInvoices", JSON.stringify(updated));
+    localStorage.setItem("invora-saved-invoices", JSON.stringify(updated));
   }
 
   function loadInvoice(invoice) {
@@ -101,13 +104,13 @@ export default function App() {
   function deleteInvoice(id) {
     const updated = savedInvoices.filter((invoice) => invoice.id !== id);
     setSavedInvoices(updated);
-    localStorage.setItem("savedInvoices", JSON.stringify(updated));
+    localStorage.setItem("invora-saved-invoices", JSON.stringify(updated));
   }
 
   function newInvoice() {
     const next = invoiceNumber + 1;
     setInvoiceNumber(next);
-    localStorage.setItem("invoiceNumber", String(next));
+    localStorage.setItem("invora-invoice-number", String(next));
 
     setClient("");
     setKid("");
@@ -130,7 +133,7 @@ export default function App() {
   return (
     <div className="page">
       <div className="hero no-print">
-        <img src={logo} alt="Invoxa logo" className="logo" />
+        <div className="brand-logo">◆ Invora</div>
         <h1>Invoices done right</h1>
         <p>Professional invoice generator for small businesses.</p>
       </div>
