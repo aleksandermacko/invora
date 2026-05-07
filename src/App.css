@@ -538,3 +538,67 @@ td:nth-child(n+2) {
     height: 6px !important;
   }
 }
+@media (max-width: 768px) {
+  .page {
+    padding: 18px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .top-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .hero h1 {
+    font-size: 54px;
+    line-height: 0.95;
+  }
+
+  .hero p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .panel {
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .invoice {
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .invoice-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .right {
+    text-align: left;
+  }
+
+  .bill-row {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 10px;
+  }
+}
