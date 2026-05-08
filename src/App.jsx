@@ -47,15 +47,8 @@ export default function App() {
 
   const vat = includeVat ? subtotal * 0.25 : 0;
   const total = subtotal + vat;
-
   const invoiceCode = `INV-${String(invoiceNumber).padStart(3, "0")}`;
-
   const issueDate = new Date();
-
-  const paymentDays = Number(terms.match(/\d+/)?.[0] || 14);
-
-  const dueDate = new Date(issueDate);
-  dueDate.setDate(issueDate.getDate() + paymentDays);
 
   function money(value) {
     return new Intl.NumberFormat("nb-NO", {
@@ -71,12 +64,7 @@ export default function App() {
   function addItem() {
     setItems([
       ...items,
-      {
-        id: Date.now(),
-        description: "",
-        quantity: "",
-        price: "",
-      },
+      { id: Date.now(), description: "", quantity: "", price: "" },
     ]);
   }
 
@@ -108,7 +96,6 @@ export default function App() {
     };
 
     const updated = [invoice, ...savedInvoices];
-
     setSavedInvoices(updated);
     localStorage.setItem("invora-saved-invoices", JSON.stringify(updated));
   }
@@ -124,7 +111,6 @@ export default function App() {
 
   function deleteInvoice(id) {
     const updated = savedInvoices.filter((invoice) => invoice.id !== id);
-
     setSavedInvoices(updated);
     localStorage.setItem("invora-saved-invoices", JSON.stringify(updated));
   }
@@ -139,15 +125,7 @@ export default function App() {
     setKid("");
     setTerms("Payment due within 14 days.");
     setIncludeVat(true);
-
-    setItems([
-      {
-        id: Date.now(),
-        description: "",
-        quantity: "",
-        price: "",
-      },
-    ]);
+    setItems([{ id: Date.now(), description: "", quantity: "", price: "" }]);
   }
 
   function downloadPDF() {
@@ -155,15 +133,8 @@ export default function App() {
       .set({
         margin: 0,
         filename: `${invoiceCode}-${client || "invoice"}.pdf`,
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-        },
-        jsPDF: {
-          unit: "mm",
-          format: "a4",
-          orientation: "portrait",
-        },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       })
       .from(invoiceRef.current)
       .save();
@@ -293,7 +264,6 @@ export default function App() {
               </div>
 
               <label>Description</label>
-
               <input
                 value={item.description}
                 onChange={(e) =>
@@ -304,7 +274,6 @@ export default function App() {
               <div className="grid">
                 <div>
                   <label>Qty</label>
-
                   <input
                     type="number"
                     value={item.quantity}
@@ -316,7 +285,6 @@ export default function App() {
 
                 <div>
                   <label>Price</label>
-
                   <input
                     type="number"
                     value={item.price}
@@ -346,7 +314,6 @@ export default function App() {
               <div className="saved-item" key={invoice.id}>
                 <div onClick={() => loadInvoice(invoice)}>
                   <b>{invoice.invoiceCode}</b>
-
                   <span>
                     {invoice.client || "No client"} • {money(invoice.total)}
                   </span>
@@ -378,25 +345,19 @@ export default function App() {
 
               <div className="right">
                 <h3>Invoice</h3>
-
                 <p className="big-code">{invoiceCode}</p>
-
                 <p>Issue date: {issueDate.toLocaleDateString("nb-NO")}</p>
-
-                <p>Due date: {dueDate.toLocaleDateString("nb-NO")}</p>
               </div>
             </div>
 
             <div className="bill-row">
               <div className="bill-box">
                 <span>Bill to</span>
-
                 <h3>{client}</h3>
               </div>
 
               <div className="amount-card">
                 <span>Total due</span>
-
                 <strong>{total > 0 ? money(total) : ""}</strong>
               </div>
             </div>
@@ -419,11 +380,8 @@ export default function App() {
                   return (
                     <tr key={item.id}>
                       <td>{item.description}</td>
-
                       <td>{item.quantity}</td>
-
                       <td>{item.price ? money(Number(item.price)) : ""}</td>
-
                       <td>{lineTotal > 0 ? money(lineTotal) : ""}</td>
                     </tr>
                   );
@@ -434,21 +392,18 @@ export default function App() {
             <div className="totals">
               <p>
                 <span>Subtotal</span>
-
                 <b>{subtotal > 0 ? money(subtotal) : ""}</b>
               </p>
 
               {includeVat && (
                 <p>
                   <span>VAT 25%</span>
-
                   <b>{vat > 0 ? money(vat) : ""}</b>
                 </p>
               )}
 
               <h3>
                 <span>Total</span>
-
                 <b>{total > 0 ? money(total) : ""}</b>
               </h3>
             </div>
@@ -459,19 +414,16 @@ export default function App() {
               <div className="payment-grid">
                 <p>
                   <b>KID</b>
-
                   <span>{kid}</span>
                 </p>
 
                 <p>
                   <b>Account</b>
-
                   <span>{company.account}</span>
                 </p>
 
                 <p>
                   <b>IBAN</b>
-
                   <span>{company.iban}</span>
                 </p>
               </div>
