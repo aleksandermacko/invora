@@ -19,6 +19,7 @@ export default function App() {
   const [terms, setTerms] = useState("Payment due within 14 days.");
   const [invoiceNumber, setInvoiceNumber] = useState(1);
   const [savedInvoices, setSavedInvoices] = useState([]);
+  const [includeVat, setIncludeVat] = useState(true);
 
   const [items, setItems] = useState([
     { id: Date.now(), description: "", quantity: "", price: "" },
@@ -44,16 +45,14 @@ export default function App() {
     0
   );
 
-  const vat = subtotal * 0.25;
+  const vat = includeVat ? subtotal * 0.25 : 0;
   const total = subtotal + vat;
 
   const invoiceCode = `INV-${String(invoiceNumber).padStart(3, "0")}`;
 
   const issueDate = new Date();
 
-  const paymentDays = Number(
-    terms.match(/\d+/)?.[0] || 14
-  );
+  const paymentDays = Number(terms.match(/\d+/)?.[0] || 14);
 
   const dueDate = new Date(issueDate);
   dueDate.setDate(issueDate.getDate() + paymentDays);
@@ -84,19 +83,14 @@ export default function App() {
   function updateItem(id, field, value) {
     setItems(
       items.map((item) =>
-        item.id === id
-          ? { ...item, [field]: value }
-          : item
+        item.id === id ? { ...item, [field]: value } : item
       )
     );
   }
 
   function removeItem(id) {
     if (items.length === 1) return;
-
-    setItems(
-      items.filter((item) => item.id !== id)
-    );
+    setItems(items.filter((item) => item.id !== id));
   }
 
   function saveInvoice() {
@@ -108,6 +102,7 @@ export default function App() {
       kid,
       terms,
       items,
+      includeVat,
       total,
       date: issueDate.toLocaleDateString("nb-NO"),
     };
@@ -115,11 +110,7 @@ export default function App() {
     const updated = [invoice, ...savedInvoices];
 
     setSavedInvoices(updated);
-
-    localStorage.setItem(
-      "invora-saved-invoices",
-      JSON.stringify(updated)
-    );
+    localStorage.setItem("invora-saved-invoices", JSON.stringify(updated));
   }
 
   function loadInvoice(invoice) {
@@ -128,34 +119,26 @@ export default function App() {
     setKid(invoice.kid);
     setTerms(invoice.terms);
     setItems(invoice.items);
+    setIncludeVat(invoice.includeVat ?? true);
   }
 
   function deleteInvoice(id) {
-    const updated = savedInvoices.filter(
-      (invoice) => invoice.id !== id
-    );
+    const updated = savedInvoices.filter((invoice) => invoice.id !== id);
 
     setSavedInvoices(updated);
-
-    localStorage.setItem(
-      "invora-saved-invoices",
-      JSON.stringify(updated)
-    );
+    localStorage.setItem("invora-saved-invoices", JSON.stringify(updated));
   }
 
   function newInvoice() {
     const next = invoiceNumber + 1;
 
     setInvoiceNumber(next);
-
-    localStorage.setItem(
-      "invora-invoice-number",
-      String(next)
-    );
+    localStorage.setItem("invora-invoice-number", String(next));
 
     setClient("");
     setKid("");
     setTerms("Payment due within 14 days.");
+    setIncludeVat(true);
 
     setItems([
       {
@@ -171,9 +154,7 @@ export default function App() {
     html2pdf()
       .set({
         margin: 0,
-        filename: `${invoiceCode}-${
-          client || "invoice"
-        }.pdf`,
+        filename: `${invoiceCode}-${client || "invoice"}.pdf`,
         html2canvas: {
           scale: 2,
           useCORS: true,
@@ -197,26 +178,18 @@ export default function App() {
         </div>
 
         <div className="top-actions">
-          <button
-            className="ghost-btn"
-            onClick={newInvoice}
-          >
+          <button className="ghost-btn" onClick={newInvoice}>
             New invoice
           </button>
 
-          <button
-            className="primary-btn"
-            onClick={downloadPDF}
-          >
+          <button className="primary-btn" onClick={downloadPDF}>
             Download PDF
           </button>
         </div>
       </div>
 
       <section className="hero no-print">
-        <div className="pill">
-          Professional invoicing made simple
-        </div>
+        <div className="pill">Professional invoicing made simple</div>
 
         <h1>
           Create polished invoices
@@ -224,8 +197,7 @@ export default function App() {
         </h1>
 
         <p>
-          Build clean invoices, calculate VAT,
-          add payment details, and export a
+          Build clean invoices, calculate VAT, add payment details, and export a
           branded PDF instantly.
         </p>
       </section>
@@ -238,132 +210,74 @@ export default function App() {
               <h2>Invoice details</h2>
             </div>
 
-            <div className="invoice-badge">
-              {invoiceCode}
-            </div>
+            <div className="invoice-badge">{invoiceCode}</div>
           </div>
 
           <div className="mini">
-            <span>
-              Issue:{" "}
-              {issueDate.toLocaleDateString(
-                "nb-NO"
-              )}
-            </span>
+            <span>Issue: {issueDate.toLocaleDateString("nb-NO")}</span>
           </div>
 
           <label>Client name</label>
-
-          <input
-            value={client}
-            onChange={(e) =>
-              setClient(e.target.value)
-            }
-          />
+          <input value={client} onChange={(e) => setClient(e.target.value)} />
 
           <label>KID</label>
-
-          <input
-            value={kid}
-            onChange={(e) =>
-              setKid(e.target.value)
-            }
-          />
+          <input value={kid} onChange={(e) => setKid(e.target.value)} />
 
           <label>Payment terms</label>
+          <input value={terms} onChange={(e) => setTerms(e.target.value)} />
 
-          <input
-            value={terms}
-            onChange={(e) =>
-              setTerms(e.target.value)
-            }
-          />
+          <label>
+            <input
+              type="checkbox"
+              checked={includeVat}
+              onChange={(e) => setIncludeVat(e.target.checked)}
+              style={{ width: "auto", marginRight: "10px" }}
+            />
+            Include VAT 25%
+          </label>
 
-          <div className="section-title">
-            Company settings
-          </div>
+          <div className="section-title">Company settings</div>
 
           <label>Company name</label>
-
           <input
             value={company.name}
-            onChange={(e) =>
-              updateCompany(
-                "name",
-                e.target.value
-              )
-            }
+            onChange={(e) => updateCompany("name", e.target.value)}
           />
 
           <label>Org number</label>
-
           <input
             value={company.org}
-            onChange={(e) =>
-              updateCompany(
-                "org",
-                e.target.value
-              )
-            }
+            onChange={(e) => updateCompany("org", e.target.value)}
           />
 
           <label>Address</label>
-
           <input
             value={company.address}
-            onChange={(e) =>
-              updateCompany(
-                "address",
-                e.target.value
-              )
-            }
+            onChange={(e) => updateCompany("address", e.target.value)}
           />
 
           <label>Email</label>
-
           <input
             value={company.email}
-            onChange={(e) =>
-              updateCompany(
-                "email",
-                e.target.value
-              )
-            }
+            onChange={(e) => updateCompany("email", e.target.value)}
           />
 
           <label>Account number</label>
-
           <input
             value={company.account}
-            onChange={(e) =>
-              updateCompany(
-                "account",
-                e.target.value
-              )
-            }
+            onChange={(e) => updateCompany("account", e.target.value)}
           />
 
           <label>IBAN</label>
-
           <input
             value={company.iban}
-            onChange={(e) =>
-              updateCompany(
-                "iban",
-                e.target.value
-              )
-            }
+            onChange={(e) => updateCompany("iban", e.target.value)}
           />
 
           <div className="items-title">
-            <div className="section-title">
-              Items
-            </div>
+            <div className="section-title">Items</div>
 
-            <button
-              className="small"
-              onClick={addItem}
-            >
+            <button className="small" onClick={addItem}>
               + Add
             </button>
           </div>
@@ -373,12 +287,7 @@ export default function App() {
               <div className="item-top">
                 <b>Item {index + 1}</b>
 
-                <button
-                  className="danger"
-                  onClick={() =>
-                    removeItem(item.id)
-                  }
-                >
+                <button className="danger" onClick={() => removeItem(item.id)}>
                   Remove
                 </button>
               </div>
@@ -388,11 +297,7 @@ export default function App() {
               <input
                 value={item.description}
                 onChange={(e) =>
-                  updateItem(
-                    item.id,
-                    "description",
-                    e.target.value
-                  )
+                  updateItem(item.id, "description", e.target.value)
                 }
               />
 
@@ -404,11 +309,7 @@ export default function App() {
                     type="number"
                     value={item.quantity}
                     onChange={(e) =>
-                      updateItem(
-                        item.id,
-                        "quantity",
-                        e.target.value
-                      )
+                      updateItem(item.id, "quantity", e.target.value)
                     }
                   />
                 </div>
@@ -420,11 +321,7 @@ export default function App() {
                     type="number"
                     value={item.price}
                     onChange={(e) =>
-                      updateItem(
-                        item.id,
-                        "price",
-                        e.target.value
-                      )
+                      updateItem(item.id, "price", e.target.value)
                     }
                   />
                 </div>
@@ -432,79 +329,46 @@ export default function App() {
             </div>
           ))}
 
-          <button
-            className="primary-btn wide"
-            onClick={downloadPDF}
-          >
+          <button className="primary-btn wide" onClick={downloadPDF}>
             Download PDF
           </button>
 
-          <button
-            className="secondary wide"
-            onClick={saveInvoice}
-          >
+          <button className="secondary wide" onClick={saveInvoice}>
             Save invoice
           </button>
 
           <div className="saved">
-            <div className="section-title">
-              Saved invoices
-            </div>
+            <div className="section-title">Saved invoices</div>
 
-            {savedInvoices.length === 0 && (
-              <p>No saved invoices.</p>
-            )}
+            {savedInvoices.length === 0 && <p>No saved invoices.</p>}
 
             {savedInvoices.map((invoice) => (
-              <div
-                className="saved-item"
-                key={invoice.id}
-              >
-                <div
-                  onClick={() =>
-                    loadInvoice(invoice)
-                  }
-                >
+              <div className="saved-item" key={invoice.id}>
+                <div onClick={() => loadInvoice(invoice)}>
                   <b>{invoice.invoiceCode}</b>
 
                   <span>
-                    {invoice.client ||
-                      "No client"}{" "}
-                    • {money(invoice.total)}
+                    {invoice.client || "No client"} • {money(invoice.total)}
                   </span>
                 </div>
 
-                <button
-                  onClick={() =>
-                    deleteInvoice(invoice.id)
-                  }
-                >
-                  X
-                </button>
+                <button onClick={() => deleteInvoice(invoice.id)}>X</button>
               </div>
             ))}
           </div>
         </div>
 
         <div className="preview-wrap">
-          <div className="preview-label no-print">
-            Live PDF preview
-          </div>
+          <div className="preview-label no-print">Live PDF preview</div>
 
-          <div
-            className="invoice"
-            ref={invoiceRef}
-          >
+          <div className="invoice" ref={invoiceRef}>
             <div className="invoice-accent"></div>
 
             <div className="invoice-header">
               <div>
                 <div className="invoice-brand">
                   <span>◆</span>
-
-                  <strong>
-                    {company.name}
-                  </strong>
+                  <strong>{company.name}</strong>
                 </div>
 
                 <p>{company.org}</p>
@@ -515,23 +379,11 @@ export default function App() {
               <div className="right">
                 <h3>Invoice</h3>
 
-                <p className="big-code">
-                  {invoiceCode}
-                </p>
+                <p className="big-code">{invoiceCode}</p>
 
-                <p>
-                  Issue date:{" "}
-                  {issueDate.toLocaleDateString(
-                    "nb-NO"
-                  )}
-                </p>
+                <p>Issue date: {issueDate.toLocaleDateString("nb-NO")}</p>
 
-                <p>
-                  Due date:{" "}
-                  {dueDate.toLocaleDateString(
-                    "nb-NO"
-                  )}
-                </p>
+                <p>Due date: {dueDate.toLocaleDateString("nb-NO")}</p>
               </div>
             </div>
 
@@ -545,11 +397,7 @@ export default function App() {
               <div className="amount-card">
                 <span>Total due</span>
 
-                <strong>
-                  {total > 0
-                    ? money(total)
-                    : ""}
-                </strong>
+                <strong>{total > 0 ? money(total) : ""}</strong>
               </div>
             </div>
 
@@ -566,34 +414,17 @@ export default function App() {
               <tbody>
                 {items.map((item) => {
                   const lineTotal =
-                    Number(
-                      item.quantity || 0
-                    ) *
-                    Number(item.price || 0);
+                    Number(item.quantity || 0) * Number(item.price || 0);
 
                   return (
                     <tr key={item.id}>
-                      <td>
-                        {item.description}
-                      </td>
+                      <td>{item.description}</td>
 
-                      <td>
-                        {item.quantity}
-                      </td>
+                      <td>{item.quantity}</td>
 
-                      <td>
-                        {item.price
-                          ? money(
-                              Number(item.price)
-                            )
-                          : ""}
-                      </td>
+                      <td>{item.price ? money(Number(item.price)) : ""}</td>
 
-                      <td>
-                        {lineTotal > 0
-                          ? money(lineTotal)
-                          : ""}
-                      </td>
+                      <td>{lineTotal > 0 ? money(lineTotal) : ""}</td>
                     </tr>
                   );
                 })}
@@ -604,38 +435,26 @@ export default function App() {
               <p>
                 <span>Subtotal</span>
 
-                <b>
-                  {subtotal > 0
-                    ? money(subtotal)
-                    : ""}
-                </b>
+                <b>{subtotal > 0 ? money(subtotal) : ""}</b>
               </p>
 
-              <p>
-                <span>VAT 25%</span>
+              {includeVat && (
+                <p>
+                  <span>VAT 25%</span>
 
-                <b>
-                  {vat > 0
-                    ? money(vat)
-                    : ""}
-                </b>
-              </p>
+                  <b>{vat > 0 ? money(vat) : ""}</b>
+                </p>
+              )}
 
               <h3>
                 <span>Total</span>
 
-                <b>
-                  {total > 0
-                    ? money(total)
-                    : ""}
-                </b>
+                <b>{total > 0 ? money(total) : ""}</b>
               </h3>
             </div>
 
             <div className="payment">
-              <h3>
-                Payment information
-              </h3>
+              <h3>Payment information</h3>
 
               <div className="payment-grid">
                 <p>
@@ -647,23 +466,17 @@ export default function App() {
                 <p>
                   <b>Account</b>
 
-                  <span>
-                    {company.account}
-                  </span>
+                  <span>{company.account}</span>
                 </p>
 
                 <p>
                   <b>IBAN</b>
 
-                  <span>
-                    {company.iban}
-                  </span>
+                  <span>{company.iban}</span>
                 </p>
               </div>
 
-              <p className="terms">
-                {terms}
-              </p>
+              <p className="terms">{terms}</p>
             </div>
           </div>
         </div>
