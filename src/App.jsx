@@ -20,6 +20,7 @@ export default function App() {
   const [invoiceNumber, setInvoiceNumber] = useState(1);
   const [savedInvoices, setSavedInvoices] = useState([]);
   const [includeVat, setIncludeVat] = useState(true);
+  const [currency, setCurrency] = useState("NOK");
 
   const [items, setItems] = useState([
     { id: Date.now(), description: "", quantity: "", price: "" },
@@ -29,15 +30,21 @@ export default function App() {
     const savedCompany = localStorage.getItem("invora-company");
     const savedNumber = localStorage.getItem("invora-invoice-number");
     const saved = localStorage.getItem("invora-saved-invoices");
+    const savedCurrency = localStorage.getItem("invora-currency");
 
     if (savedCompany) setCompany(JSON.parse(savedCompany));
     if (savedNumber) setInvoiceNumber(Number(savedNumber));
     if (saved) setSavedInvoices(JSON.parse(saved));
+    if (savedCurrency) setCurrency(savedCurrency);
   }, []);
 
   useEffect(() => {
     localStorage.setItem("invora-company", JSON.stringify(company));
   }, [company]);
+
+  useEffect(() => {
+    localStorage.setItem("invora-currency", currency);
+  }, [currency]);
 
   const subtotal = items.reduce(
     (sum, item) =>
@@ -53,7 +60,7 @@ export default function App() {
   function money(value) {
     return new Intl.NumberFormat("nb-NO", {
       style: "currency",
-      currency: "NOK",
+      currency,
     }).format(value || 0);
   }
 
@@ -91,6 +98,7 @@ export default function App() {
       terms,
       items,
       includeVat,
+      currency,
       total,
       date: issueDate.toLocaleDateString("nb-NO"),
     };
@@ -107,6 +115,7 @@ export default function App() {
     setTerms(invoice.terms);
     setItems(invoice.items);
     setIncludeVat(invoice.includeVat ?? true);
+    setCurrency(invoice.currency || "NOK");
   }
 
   function deleteInvoice(id) {
@@ -196,6 +205,30 @@ export default function App() {
 
           <label>Payment terms</label>
           <input value={terms} onChange={(e) => setTerms(e.target.value)} />
+
+          <label>Currency</label>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "14px 15px",
+              borderRadius: "15px",
+              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(2, 6, 23, 0.86)",
+              color: "white",
+              fontSize: "15px",
+              outline: "none",
+            }}
+          >
+            <option value="NOK">NOK - Norwegian Krone</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="USD">USD - US Dollar</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="PLN">PLN - Polish Zloty</option>
+            <option value="DKK">DKK - Danish Krone</option>
+            <option value="SEK">SEK - Swedish Krona</option>
+          </select>
 
           <label>
             <input
